@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import shutil
+import stat
 import subprocess
 import tempfile
 import urllib.request
@@ -50,7 +51,12 @@ def main() -> int:
                 path = Path(member.filename)
                 if path.is_absolute() or ".." in path.parts:
                     raise RuntimeError("WhiteSur archive contains an unsafe path")
-                bundle.extract(member, temp_dir)
+                destination = Path(temp_dir) / path
+                if stat.S_ISLNK(member.external_attr >> 16):
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.symlink_to(bundle.read(member).decode("utf-8"))
+                else:
+                    bundle.extract(member, temp_dir)
 
         subprocess.run(
             [
