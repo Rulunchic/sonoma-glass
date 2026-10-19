@@ -15,8 +15,8 @@ hl.config({
     shadow = { enabled = true, range = 24, render_power = 3, color = "rgba(00000055)" },
     blur = {
       enabled = true,
-      size = 22,
-      passes = 3,
+      size = 30,
+      passes = 4,
       new_optimizations = true,
       ignore_opacity = true,
       popups = true,

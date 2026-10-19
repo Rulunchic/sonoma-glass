@@ -9,13 +9,15 @@ HYPRGLASS="$SUPPORT/deps/hyprglass"
 REPOSITORY="https://github.com/Rulunchic/sonoma-glass.git"
 COMMIT="$(<"$ROOT/HYPRGLASS-COMMIT")"
 REBUILD=0
+REFRESH_ICONS=0
 
-if [[ "${1:-}" == "--rebuild" ]]; then
-  REBUILD=1
-elif [[ $# -gt 0 ]]; then
-  echo "Usage: ./install.sh [--rebuild]" >&2
-  exit 2
-fi
+for argument in "$@"; do
+  case "$argument" in
+    --rebuild) REBUILD=1 ;;
+    --refresh-icons) REFRESH_ICONS=1 ;;
+    *) echo "Usage: ./install.sh [--rebuild] [--refresh-icons]" >&2; exit 2 ;;
+  esac
+done
 
 if [[ "$ROOT" == "$THEME" && -d "$ROOT/.git" ]]; then
   if [[ ! -d "$SUPPORT/.git" ]]; then
@@ -30,10 +32,10 @@ elif [[ "$ROOT" != "$SUPPORT" ]]; then
   exit 1
 fi
 
-for command in git make c++ pkg-config wayland-scanner hyprctl omarchy; do
+for command in git make c++ pkg-config wayland-scanner gtk-update-icon-cache hyprctl omarchy python3; do
   if ! command -v "$command" >/dev/null 2>&1; then
     echo "Missing command: $command" >&2
-    echo "On Arch, install base-devel, git, pkgconf, wayland-protocols and Hyprland development files." >&2
+    echo "On Arch, install base-devel, git, pkgconf, wayland-protocols, python, gtk4 and Hyprland development files." >&2
     exit 1
   fi
 done
@@ -70,8 +72,17 @@ if [[ ! -s "$HYPRGLASS/hyprglass.so" || $REBUILD == 1 ]]; then
   make -C "$HYPRGLASS" -j"$(nproc)"
 fi
 
+python3 "$ROOT/install-whitesur-icons.py"
+if [[ $REFRESH_ICONS == 1 ]]; then
+  python3 "$ROOT/install-bigsur-icons.py" --force
+else
+  python3 "$ROOT/install-bigsur-icons.py"
+fi
+python3 "$ROOT/install-app-icon-aliases.py"
+gtk-update-icon-cache --force "$HOME_DIR/.local/share/icons/SonomaGlass-dark"
+
 mkdir -p "$THEME"
-for file in colors.toml shell.toml foot.ini hyprland.lua README.md; do
+for file in colors.toml shell.toml foot.ini hyprland.lua icons.theme README.md; do
   cp -f "$ROOT/$file" "$THEME/$file"
 done
 rm -rf "$THEME/backgrounds"
@@ -82,7 +93,11 @@ cp -a "$ROOT/backgrounds" "$THEME/backgrounds"
 # installed theme folder into a local theme so its Lua and terminal config load.
 rm -rf "$THEME/.git"
 rm -f "$THEME/.gitignore" "$THEME/install.sh" "$THEME/update.sh" \
-  "$THEME/HYPRGLASS-COMMIT" "$THEME/HYPRGLASS-LICENSE" "$THEME/LICENSE"
+  "$THEME/install-bigsur-icons.py" "$THEME/install-whitesur-icons.py" \
+  "$THEME/install-app-icon-aliases.py" \
+  "$THEME/uninstall-icons.py" \
+  "$THEME/HYPRGLASS-COMMIT" \
+  "$THEME/HYPRGLASS-LICENSE" "$THEME/LICENSE"
 omarchy theme set sonoma-glass
 
 echo "Sonoma Glass installed. The six included wallpapers are available in the Omarchy background picker."
