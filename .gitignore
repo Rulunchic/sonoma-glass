@@ -1,0 +1,6 @@
+*.part
+*.part.*
+*.mp4
+*.mov
+*.so
+deps/
