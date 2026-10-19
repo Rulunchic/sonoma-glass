@@ -6,6 +6,7 @@ HOME_DIR="${HOME:?HOME is not set}"
 SUPPORT="$HOME_DIR/.local/share/sonoma-glass"
 THEME="$HOME_DIR/.config/omarchy/themes/sonoma-glass"
 HYPRGLASS="$SUPPORT/deps/hyprglass"
+REPOSITORY="https://github.com/Rulunchic/sonoma-glass.git"
 COMMIT="$(<"$ROOT/HYPRGLASS-COMMIT")"
 REBUILD=0
 
@@ -16,8 +17,16 @@ elif [[ $# -gt 0 ]]; then
   exit 2
 fi
 
-if [[ "$ROOT" != "$SUPPORT" ]]; then
-  echo "Clone this repository to $SUPPORT, then run ./install.sh from there." >&2
+if [[ "$ROOT" == "$THEME" && -d "$ROOT/.git" ]]; then
+  if [[ ! -d "$SUPPORT/.git" ]]; then
+    mkdir -p "$(dirname -- "$SUPPORT")"
+    git clone "$REPOSITORY" "$SUPPORT"
+  else
+    git -C "$SUPPORT" pull --ff-only
+  fi
+  exec "$SUPPORT/install.sh" "$@"
+elif [[ "$ROOT" != "$SUPPORT" ]]; then
+  echo "Run this after Omarchy installs the theme, from $THEME/install.sh." >&2
   exit 1
 fi
 
@@ -62,7 +71,18 @@ if [[ ! -s "$HYPRGLASS/hyprglass.so" || $REBUILD == 1 ]]; then
 fi
 
 mkdir -p "$THEME"
-cp -a "$ROOT/theme/." "$THEME/"
+for file in colors.toml shell.toml foot.ini hyprland.lua README.md; do
+  cp -f "$ROOT/$file" "$THEME/$file"
+done
+rm -rf "$THEME/backgrounds"
+cp -a "$ROOT/backgrounds" "$THEME/backgrounds"
+
+# Omarchy trusts user-created theme folders but deliberately filters executable
+# files from git clones. Keep an updateable checkout in SUPPORT and turn the
+# installed theme folder into a local theme so its Lua and terminal config load.
+rm -rf "$THEME/.git"
+rm -f "$THEME/.gitignore" "$THEME/install.sh" "$THEME/update.sh" \
+  "$THEME/HYPRGLASS-COMMIT" "$THEME/HYPRGLASS-LICENSE" "$THEME/LICENSE"
 omarchy theme set sonoma-glass
 
 echo "Sonoma Glass installed. The six included wallpapers are available in the Omarchy background picker."

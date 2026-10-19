@@ -12,13 +12,16 @@ The installer builds the pinned HyprGlass revision locally against the installed
 
 ## Install
 
+Install the theme through Omarchy's built-in theme installer:
+
 ```bash
-git clone https://github.com/Rulunchic/sonoma-glass.git ~/.local/share/sonoma-glass
-cd ~/.local/share/sonoma-glass
-./install.sh
+omarchy theme install https://github.com/Rulunchic/sonoma-glass.git
+bash ~/.config/omarchy/themes/sonoma-glass/install.sh
 ```
 
-This installs the theme files under `~/.config/omarchy/themes/sonoma-glass`, builds HyprGlass under `~/.local/share/sonoma-glass/deps/hyprglass`, and applies the theme. The six bundled JPEGs are placed in the theme's `backgrounds/` folder, so the normal Omarchy wallpaper picker can select them. `Blue_Computer.jpg` is the default wallpaper.
+Omarchy installs the palette and six wallpapers directly. It intentionally filters `hyprland.lua` and `foot.ini` from downloaded theme repos, so the second command builds HyprGlass, installs those two local settings, and reapplies the theme. The script keeps an updateable checkout in `~/.local/share/sonoma-glass` and removes the git marker from the local theme copy, allowing Omarchy to load the custom settings.
+
+The six JPEGs are placed in the theme's `backgrounds/` folder, so the normal Omarchy wallpaper picker can select them. `Blue_Computer.jpg` is the default wallpaper.
 
 ## Update
 
