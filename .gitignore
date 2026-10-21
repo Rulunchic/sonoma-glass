@@ -4,3 +4,5 @@
 *.mov
 *.so
 deps/
+__pycache__/
+*.pyc

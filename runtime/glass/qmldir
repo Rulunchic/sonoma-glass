@@ -1,0 +1,10 @@
+singleton GlassSettings 1.0 GlassSettings.qml
+LiquidActionButton 1.0 LiquidActionButton.qml
+LiquidBarIconButton 1.0 LiquidBarIconButton.qml
+LiquidButton 1.0 LiquidButton.qml
+LiquidChrome 1.0 LiquidChrome.qml
+LiquidCursorSurface 1.0 LiquidCursorSurface.qml
+LiquidPanel 1.0 LiquidPanel.qml
+LiquidSlider 1.0 LiquidSlider.qml
+LiquidSwitch 1.0 LiquidSwitch.qml
+LiquidWidgetButton 1.0 LiquidWidgetButton.qml

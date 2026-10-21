@@ -1,0 +1,11 @@
+[Plymouth Theme]
+Name=Sonoma Glass
+Description=Black macOS-style boot splash with a white Apple and thin progress bar.
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/sonoma-glass
+ScriptFile=/usr/share/plymouth/themes/sonoma-glass/sonoma-glass.script
+ConsoleLogBackgroundColor=0x000000
+MonospaceFont=Liberation Sans 11
+Font=Liberation Sans 11

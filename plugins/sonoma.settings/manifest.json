@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "sonoma.settings",
+  "name": "Sonoma Glass Settings",
+  "version": "1.1.0",
+  "author": "Sonoma Glass",
+  "description": "Live theme, glass, transparency, colour and animation settings",
+  "kinds": ["bar-widget"],
+  "entryPoints": {"barWidget": "Panel.qml"},
+  "barWidget": {
+    "displayName": "Sonoma Glass",
+    "description": "Configure the Sonoma Glass theme",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

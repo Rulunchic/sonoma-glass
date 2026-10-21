@@ -1,53 +1,135 @@
-# Sonoma Glass for Omarchy
+# Sonoma Glass для Omarchy
 
-macOS-inspired Omarchy theme with Apple-blue accents, compact spacing, translucent Foot, stronger Hyprland blur, the HyprGlass Pomme preset, and a full Big Sur-style icon theme for applications, folders, devices, and file types. The repository includes the six Macintosh wallpapers selected for this theme. It does not include Apple aerial videos or other wallpaper collections.
+Тема в стиле macOS: Liquid Glass с преломлением по краям, прозрачный Foot, стеклянные кнопки с локальными волнами, компактные отступы, меню с вычислениями и конвертациями, иконки приложений и папок, блокировка, опциональные экраны входа и загрузки. В комплекте только шесть выбранных обоев Macintosh, без видео и дополнительных коллекций.
 
-## Requirements
+## Установка
 
-- Omarchy with Hyprland **0.56.x**
-- Arch build tools and Hyprland development files: `base-devel`, `git`, `pkgconf`, `wayland-protocols`, `hyprland`, `python`, and `gtk4` (for `gtk-update-icon-cache`)
-- A normal graphical Omarchy session for applying the theme
+Нужны Omarchy с Hyprland **0.56.x**, Python **3.11+**, Quickshell, `git`, `base-devel`, `pkgconf`, `wayland-protocols`, `qt6-shadertools`, заголовки установленного Hyprland. Для установки иконок нужен `gtk-update-icon-cache` (пакет `gtk4`). `gum` делает CLI удобнее; без него есть текстовое меню. ImageMagick нужен только для изменения цвета яблока на экране загрузки.
 
-The installer builds the pinned HyprGlass revision locally against the installed Hyprland headers. It does not install packages with `sudo`.
-
-## Install
-
-Install the theme through Omarchy's built-in theme installer:
+Через штатную установку тем Omarchy:
 
 ```bash
 omarchy theme install https://github.com/Rulunchic/sonoma-glass.git
 bash ~/.config/omarchy/themes/sonoma-glass/install.sh
 ```
 
-Omarchy installs the palette, icon theme selection, and six wallpapers directly. It intentionally filters `hyprland.lua` and `foot.ini` from downloaded theme repos, so the second command builds HyprGlass, installs the pinned WhiteSur Big Sur icon theme with folder and file icons, adds the matching artwork from the linked Big Sur app pack, maps missing installed-app names, installs local Hyprland and terminal settings, and reapplies the theme. Telegram Desktop and Vesktop receive explicit icon-name aliases. The installer keeps an updateable checkout in `~/.local/share/sonoma-glass` and removes the git marker from the local theme copy, allowing Omarchy to load the custom settings.
-
-The six JPEGs are placed in the theme's `backgrounds/` folder, so the normal Omarchy wallpaper picker can select them. `Blue_Computer.jpg` is the default wallpaper.
-
-## Update
+Либо из собственного клона:
 
 ```bash
-~/.local/share/sonoma-glass/update.sh
+git clone https://github.com/Rulunchic/sonoma-glass.git
+cd sonoma-glass
+./install.sh
 ```
 
-The updater fast-forwards the Git checkout, refreshes the installed theme files and reapplies Sonoma Glass. To rebuild HyprGlass after a compatible Hyprland update, run `~/.local/share/sonoma-glass/install.sh --rebuild`. To refresh the Big Sur icons from upstream, add `--refresh-icons`.
+Установщик открывает интерактивное меню. В разделе **Компоненты** можно включить и выключить части темы, в остальных разделах — настроить внешний вид. Завершение: **Сохранить и выйти**. До этого решения установка не меняет рабочий стол.
 
-## Remove
-
-Restore the menu entries changed for absolute-path icons, then select another theme and remove the theme and checkout:
+Без интерактивных вопросов:
 
 ```bash
-omarchy theme set <name>
-python3 ~/.local/share/sonoma-glass/uninstall-icons.py
-rm -rf ~/.config/omarchy/themes/sonoma-glass
-rm -rf ~/.local/share/sonoma-glass
+./install.sh --yes
+./install.sh --yes --no-icons --no-bubbles --no-lock
+./install.sh --yes --set terminal.alpha=0.65 --set glass.terminal.refraction_strength=1.8
+./install.sh --yes --config ~/sonoma-settings.json
 ```
 
-## Wallpaper credits
+Также доступны `--no-glass`, `--no-windows`, `--no-layers`, `--no-terminal`, `--no-buttons`, `--no-menu`, `--with-login`, `--with-boot`, `--rebuild`, `--refresh-icons`. Настройки существующей установки сохраняются при обновлении. Отключение терминального стекла оставляет обычное размытие и выбранную прозрачность фона.
 
-The six Macintosh wallpaper images are by [Basic Apple Guy](https://basicappleguy.com/haberdashery/macintoshwallpapers). They are included here at the repository owner's request; please use them for personal desktop wallpaper use and consult the original page for the creator's terms. This project is unofficial and is not affiliated with Apple or Basic Apple Guy.
+HyprGlass собирается локально по зафиксированной версии с патчем из `patches/hyprglass-liquidjs.patch`. Готовые бинарники под чужую версию Hyprland не распространяются. Установщик сохраняет предыдущие конфиги в `~/.local/share/sonoma-glass/backups/`. Системные пакеты автоматически не устанавливаются.
 
-The base app, folder, device, and file icons come from [WhiteSur Icon Theme](https://github.com/vinceliuice/WhiteSur-icon-theme), pinned to revision `73d8040`; the upstream GPL-3.0 license is installed alongside the icon theme. Matching Big Sur app artwork by [Nuno Coelho Santos](https://github.com/nunosans/big-sur-icons) is downloaded during setup rather than bundled here and follows its [CC BY-NC 4.0 license](https://creativecommons.org/licenses/by-nc/4.0/).
+Omarchy фильтрует исполняемые конфиги скачанных тем; второй шаг устанавливает проверяемые локальные файлы. При запуске из папки тем отдельный git-клон сохраняется в `~/.local/share/sonoma-glass/source`, а тема становится локальной и появляется в обычном списке тем.
 
-## Licenses
+## Настройки в верхней панели
 
-The theme configuration and installer scripts in this repository are provided under the MIT License. HyprGlass is a separate project; its MIT license is included as `HYPRGLASS-LICENSE`. Wallpaper artwork is not covered by either code license.
+Значок **Sonoma Glass** появляется справа в баре, рядом с системным треем. На вкладке **Основное** — четыре пресета, выбор области и несколько главных ползунков. **Все параметры** содержит поиск по полному каталогу и выбор раздела. **Профили** — сохранение своих вариантов, загрузку, импорт и экспорт. Ползунки имеют область захвата высотой 32 px: число меняется плавно при движении, настройки применяются после отпускания мыши. На основном экране прозрачность задаётся в процентах; больше процентов — прозрачнее фон. Выбор цвета встроен в панель: поле насыщенности и яркости, спектр оттенков, альфа, готовые цвета и HEX, без системных диалогов.
+
+- Пять отдельных профилей материала: окна, терминал, бар, меню, виджеты.
+- Две модели: Liquid Glass JS и стандартная модель HyprGlass.
+- Преломление, ширина края терминала, размытие, линза, зерно, блики, Френель, аберрация, окрашивание, яркость, контраст и насыщенность.
+- Плотность окон и фона терминала, прозрачность панели, меню, виджетов, уведомлений и кнопок.
+- Цвета, рамки, отступы, размеры интерфейса и шрифт терминала.
+- Волны внутри кнопок: сила, длительность, упругость, затухание, поведение при наведении и движении. Глобального эффекта вокруг мышки нет.
+- Частота обновления фона, кэширование и маски поверхностей — на вкладке **Все параметры**.
+- Пресеты **Сбалансированный**, **Прозрачный**, **Матовое стекло**, **Спокойный**; пользовательские профили, импорт/экспорт и откат.
+
+CLI и виджет используют один проверяемый каталог параметров и файл `~/.config/omarchy/sonoma-glass/settings.json`. Изменения виджета применяются автоматически; ползунки сохраняют значение после отпускания мыши. Фоновые обновления сохраняют положение захваченного бегунка. Настройки входа и загрузки находятся в разделах **Компоненты** и **Блокировка, вход и загрузка** на вкладке **Все параметры**. Некорректные значения отклоняются; при ошибке конфигурации Hyprland возвращается предыдущий вариант. Foot применяет новый шрифт и фон **в новых окнах**.
+
+## CLI
+
+```bash
+sonoma-glass configure
+sonoma-glass list
+sonoma-glass get terminal.alpha
+sonoma-glass set terminal.alpha 0.66
+sonoma-glass set glass.terminal.refraction_strength 2.0
+sonoma-glass set terminal.rim_width 36
+sonoma-glass set shell.popups.background-alpha 0.35
+sonoma-glass set desktop.active_border '#82c5ff'
+sonoma-glass set components.bubbles false
+sonoma-glass preset frosted
+sonoma-glass profile save 'Моё стекло'
+sonoma-glass profile load 'Моё стекло'
+sonoma-glass export ~/sonoma-settings.json
+sonoma-glass import ~/sonoma-settings.json
+sonoma-glass undo
+sonoma-glass status
+```
+
+`sonoma-glass set-json '{"terminal.alpha":0.7,"glass.terminal.blur_strength":1.2}'` применяет несколько параметров одной операцией. `--no-apply` у `set`/`set-json` сохраняет значения для последующего `sonoma-glass apply`. `schema` выводит полный каталог с типами и диапазонами.
+
+Цвета — `#RRGGBB`; цвета материала и рамок окон также принимают `#RRGGBBAA`. У остальных поверхностей есть отдельные параметры непрозрачности. Чем ближе непрозрачность к 1, тем плотнее фон. Значение 0 полностью прозрачно. Стеклянный материал не делает непрозрачное содержимое приложения прозрачным: для видимого фона под ним нужна прозрачность окна или приложения.
+
+## Обои
+
+В штатном выборе обоев доступны только `Blue_icons`, `Blue_Computer`, `Logo_Blue`, `Purple_icons`, `Grey_Icons`, `File_Yellow`. При установке выбирается `Blue_icons.jpg` либо сохранённое значение `desktop.wallpaper`. Обои входа настраиваются отдельно — `system.wallpaper`.
+
+```bash
+sonoma-glass wallpaper
+sonoma-glass wallpaper Blue_Computer.jpg
+```
+
+## Вход и загрузка
+
+По умолчанию новая установка не включает экраны входа и загрузки; существующая настройка этой темы сохраняется. В виджете включите нужные компоненты и нажмите **Применить системные**. Появится штатный запрос пароля администратора.
+
+```bash
+sonoma-glass set components.login true
+sonoma-glass set components.boot true
+sonoma-glass system-apply
+```
+
+Либо установите с `--with-login --with-boot`. В терминале используется `sudo`, из виджета — `pkexec`. Обычная настройка стекла прав администратора не требует.
+
+Вход использует SDDM и штатную проверку пароля, блокировка — штатный PAM/WlSessionLock Omarchy. Оформление загрузки использует Plymouth и существующую сборку загрузочных образов. Пароли не сохраняются. SDDM и сессия не перезапускаются; перезагрузка автоматически не выполняется. Изменения входа/загрузки видны при следующем запуске. Системные селекторы сохраняются в `/var/lib/sonoma-glass-settings`; отключение компонентов возвращает исходный выбор темы. Автовход отдельно задаётся `system.autologin` и применяется системной кнопкой.
+
+## Обновление
+
+Запустите `./update.sh` из исходного git-клона. При установке через Omarchy:
+
+```bash
+~/.local/share/sonoma-glass/source/update.sh
+```
+
+После совместимого обновления Hyprland: `sonoma-glass install --yes --rebuild`. Иконки обновляются с `--refresh-icons`. Установка с другим Hyprland требует совместимого исходного HyprGlass.
+
+## Отключение
+
+Виджет и CLI позволяют выключить отдельные компоненты. Чтобы вернуться к штатному меню и блокировке:
+
+```bash
+sonoma-glass set components.menu false
+sonoma-glass set components.lock false
+sonoma-glass set components.buttons false
+sonoma-glass set components.bubbles false
+omarchy plugin disable sonoma.settings
+omarchy theme set <другая-тема>
+```
+
+Перед удалением пользовательских файлов выключите вход и загрузку и выполните `sonoma-glass system-apply`. Для удаления иконок и восстановления изменённых desktop-файлов используйте `python3 ./uninstall-icons.py` из исходного клона.
+
+## Авторы и лицензии
+
+Шесть обоев — [Basic Apple Guy](https://basicappleguy.com/haberdashery/macintoshwallpapers); включены по просьбе владельца репозитория. Используйте как личные обои рабочего стола и учитывайте условия автора. Проект не связан с Apple или Basic Apple Guy.
+
+Иконки приложений, папок, устройств и файлов — [WhiteSur](https://github.com/vinceliuice/WhiteSur-icon-theme), ревизия `73d8040`, GPL-3.0. Включённый знак загрузки взят из этого набора; лицензия — `WHITESUR-ICONS-LICENSE`. Дополнительные иконки [Nuno Coelho Santos](https://github.com/nunosans/big-sur-icons) скачиваются при установке и распространяются по CC BY-NC 4.0. Приложения с названиями, заканчивающимися на craft, сохраняют свои исходные иконки.
+
+Код темы/установщика — MIT (`LICENSE`). Адаптированные элементы Omarchy — MIT (`OMARCHY-LICENSE`). HyprGlass — BSD-3-Clause (`HYPRGLASS-LICENSE`). Формулы модели Liquid Glass JS адаптированы из [dashersw/liquid-glass-js](https://github.com/dashersw/liquid-glass-js), MIT (`LIQUID-GLASS-JS-LICENSE`). Шрифты Apple не включены; можно выбрать установленный SF Mono или другой шрифт.

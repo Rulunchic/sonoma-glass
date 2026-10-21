@@ -1,0 +1,7 @@
+[SddmGreeterTheme]
+Name=Sonoma Glass
+Description=macOS inspired login with a live clock and translucent controls
+Author=bobol
+Type=sddm-theme
+Version=1.0
+QtVersion=6

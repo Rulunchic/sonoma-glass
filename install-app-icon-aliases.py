@@ -22,12 +22,6 @@ EXACT = {
     "Deadlock": "applications-games",
     "Geometry Dash": "applications-games",
     "Disk Usage": "org.gnome.baobab",
-    "ArtCraft Launcher": "applications-graphics",
-    "DeckCraft": "applications-games",
-    "EffectCraft": "applications-graphics",
-    "FilmCraft": "multimedia-video-player",
-    "SoundCraft": "audio-player",
-    "WordCraft": "accessories-text-editor",
     "Antigravity IDE": "code",
     "Concat": "audio-player",
     "Dota 2 Mod Manager": "applications-games",
@@ -146,6 +140,10 @@ def main() -> int:
         if not values:
             continue
         name, icon = values
+        # Craft applications ship their own artwork in hicolor. Keep those
+        # original icons instead of replacing them with generic WhiteSur links.
+        if "craft" in name.casefold() or "craft" in icon.casefold():
+            continue
         source_name = choose(name, icon)
         if icon.startswith("/"):
             alias = re.sub(r"[^a-z0-9]+", "-", name.casefold()).strip("-")
